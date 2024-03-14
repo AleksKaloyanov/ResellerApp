@@ -4,6 +4,7 @@ import com.resellerapp.model.binding.UserLoginBindingModel;
 import com.resellerapp.model.binding.UserRegisterBindingModel;
 import com.resellerapp.model.service.UserServiceModel;
 import com.resellerapp.service.UserService;
+import com.resellerapp.util.CurrentUser;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,14 +25,20 @@ public class UserController {
 
     private final UserService userService;
     private final ModelMapper modelMapper;
+    private final CurrentUser currentUser;
 
-    public UserController(UserService userService, ModelMapper modelMapper) {
+    public UserController(UserService userService, ModelMapper modelMapper, CurrentUser currentUser) {
         this.userService = userService;
         this.modelMapper = modelMapper;
+        this.currentUser = currentUser;
     }
 
     @GetMapping("/login")
     public String login(Model model) {
+        if (currentUser.getId() != null) {
+            return "redirect:/home";
+        }
+
         if (!model.containsAttribute("isFound")) {
             model.addAttribute("isFound", true);
         }
@@ -62,11 +69,15 @@ public class UserController {
 
         userService.loginUser(userServiceModel.getId(), userServiceModel.getUsername());
 
+
         return "redirect:/home";
     }
 
     @GetMapping("/register")
     public String register() {
+        if (currentUser.getId() != null) {
+            return "redirect:/home";
+        }
         return "register";
     }
 
@@ -93,9 +104,9 @@ public class UserController {
     }
 
     @GetMapping("/logout")
-    public String logout(HttpSession httpSession) {
-        httpSession.invalidate();
-        return "index";
+    public String logout() {
+        userService.logout();
+        return "redirect:/";
     }
 
     @ModelAttribute

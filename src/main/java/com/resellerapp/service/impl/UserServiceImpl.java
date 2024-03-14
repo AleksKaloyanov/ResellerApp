@@ -8,6 +8,8 @@ import com.resellerapp.util.CurrentUser;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -33,9 +35,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserServiceModel findByUsernameAndPassword(String username, String password) {
+
         return modelMapper.map(userRepository
-                .findByUsernameAndPassword(username, password)
-                .orElse(null), UserServiceModel.class);
+                .findByUsernameAndPassword(username, password), UserServiceModel.class);
     }
 
     @Override
@@ -44,9 +46,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEntity findById(Long id) {
+    public UserEntity findCurrentLoginUserEntity() {
         return userRepository
-                .findById(id)
+                .findById(currentUser.getId())
                 .orElse(null);
     }
+
+    @Override
+    public void logout() {
+        currentUser.setId(null).setUsername(null);
+    }
+
+
 }

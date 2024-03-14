@@ -8,10 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
@@ -22,16 +19,22 @@ public class OfferController {
 
     private final OfferService offerService;
     private final ModelMapper modelMapper;
+    private final CurrentUser currentUser;
 
 
     public OfferController(OfferService offerService,
-                           ModelMapper modelMapper) {
+                           ModelMapper modelMapper,
+                           CurrentUser currentUser) {
         this.offerService = offerService;
         this.modelMapper = modelMapper;
+        this.currentUser = currentUser;
     }
 
     @GetMapping("/add")
     public String add() {
+        if (currentUser.getId() == null) {
+            return "redirect:/";
+        }
         return "offer-add";
     }
 
@@ -47,6 +50,19 @@ public class OfferController {
         }
 
         offerService.addOffer(modelMapper.map(offerAddBindingModel, OfferServiceModel.class));
+
+        return "redirect:/home";
+    }
+
+    @GetMapping("/remove/{id}")
+    public String remove(@PathVariable Long id) {
+        offerService.remove(id);
+        return "redirect:/home";
+    }
+
+    @GetMapping("/buy/{id}")
+    public String buy(@PathVariable Long id) {
+        offerService.buy(id);
 
         return "redirect:/home";
     }

@@ -1,5 +1,6 @@
 package com.resellerapp.model.service;
 
+import com.resellerapp.model.entity.ConditionEntity;
 import com.resellerapp.model.entity.UserEntity;
 import com.resellerapp.model.entity.enums.ConditionNameEnum;
 
@@ -17,6 +18,7 @@ public class OfferServiceModel {
     @NotNull
     private BigDecimal price;
     @NotNull
+    @Enumerated(EnumType.STRING)
     private ConditionNameEnum condition;
     private UserEntity createdBy;
 

@@ -1,5 +1,6 @@
 package com.resellerapp.model.binding;
 
+import com.resellerapp.model.entity.ConditionEntity;
 import com.resellerapp.model.entity.enums.ConditionNameEnum;
 
 import javax.persistence.EnumType;

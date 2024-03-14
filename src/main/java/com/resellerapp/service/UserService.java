@@ -10,5 +10,7 @@ public interface UserService {
 
     void loginUser(Long id, String username);
 
-    UserEntity findById(Long id);
+    UserEntity findCurrentLoginUserEntity();
+
+    void logout();
 }
